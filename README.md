@@ -8,7 +8,7 @@ flips to:
 
 > It is a truth universally acknowledged, that a single woman in possession of a good fortune, must be in want of a husband.
 
-Using GenderFlip is easy. Just copy this repository to your web server and navigate to index.php. This will display a simple form that allows you to gender flip any web page. We also include several example texts. 
+Using GenderFlip is easy. Just copy this repository to your web server and navigate to index.php. This will display a simple form that allows you to gender flip any web page. We also include several example texts from [Project Gutenberg](https://www.gutenberg.org/). 
 
 Custom implementation is not required, but is also easy:
 
