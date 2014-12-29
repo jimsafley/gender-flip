@@ -13,6 +13,9 @@ if (isset($_GET['url']) && filter_var($_GET['url'], FILTER_VALIDATE_URL)) {
         case 'peter-pan':
             $path = 'examples/16-h.htm';
             break;
+        case 'the-yellow-wallpaper':
+            $path = 'examples/1952-h.htm';
+            break;
         case 'pride-and-prejudice':
         default:
             $path = 'examples/1342-h.htm';
@@ -38,6 +41,7 @@ if (isset($_GET['url']) && filter_var($_GET['url'], FILTER_VALIDATE_URL)) {
     <h2>By Example</h2>
     <a href="?example=pride-and-prejudice">Pride and Prejudice</a><br>
     <a href="?example=peter-pan">Peter Pan</a><br>
-    <a href="?example=alice-in-wonderland">Alice in Wonderland</a>
+    <a href="?example=alice-in-wonderland">Alice in Wonderland</a><br>
+    <a href="?example=the-yellow-wallpaper">The Yellow Wallpaper</a>
 </body>
 </html>
