@@ -7,6 +7,9 @@ class GenderFlip
     /**
      * Map for simple gender-flips.
      *
+     * All words will be converted to lowercase and then duplicated with the
+     * first character uppercased.
+     *
      * @var array
      */
     protected $flips = [
@@ -14,9 +17,11 @@ class GenderFlip
         'he' => 'she',
         'she' => 'he',
         'him' => 'her',
-        'her' => 'him',
-        'his' => 'her',
-        'her' => 'his',
+        'her' => 'him', // conflict with her/his
+        'his' => 'her', // conflict with his/hers
+        'her' => 'his', // conflict with her/him
+        'his' => 'hers', // conflict with his/her
+        'hers' => 'his',
         'man' => 'woman',
         'woman' => 'man',
         'husband' => 'wife',
@@ -53,49 +58,6 @@ class GenderFlip
         'ladies' => 'gentlemen',
         'gentleman' => 'lady',
         'gentlemen' => 'ladies',
-        // upper case
-        'He' => 'She',
-        'She' => 'He',
-        'Him' => 'Her',
-        'Her' => 'Him',
-        'His' => 'Her',
-        'Her' => 'His',
-        'Man' => 'Woman',
-        'Woman' => 'Man',
-        'Husband' => 'Wife',
-        'Wife' => 'Husband',
-        'Mom' => 'Dad',
-        'Dad' => 'Mom',
-        'Mother' => 'Father',
-        'Mothers' => 'Fathers',
-        'Father' => 'Mother',
-        'Fathers' => 'Mothers',
-        'Daughter' => 'Son',
-        'Daughters' => 'Sons',
-        'Son' => 'Daughter',
-        'Sons' => 'Daughters',
-        'Girl' => 'Boy',
-        'Girls' => 'Boys',
-        'Boy' => 'Girl',
-        'Boys' => 'Girls',
-        'Sister' => 'Brother',
-        'Sisters' => 'Brothers',
-        'Brother' => 'Sister',
-        'Brothers' => 'Sisters',
-        'Men' => 'Women',
-        'Women' => 'Men',
-        'Herself' => 'Himself',
-        'Himself' => 'Herself',
-        'Mamma' => 'Papa',
-        'Papa' => 'Mamma',
-        'Niece' => 'Nephew',
-        'Nephew' => 'Niece',
-        'Nieces' => 'Nephews',
-        'Nephews' => 'Nieces',
-        'Lady' => 'Gentleman',
-        'Ladies' => 'Gentlemen',
-        'Gentleman' => 'Lady',
-        'Gentlemen' => 'Ladies',
     ];
 
     /**
@@ -110,7 +72,11 @@ class GenderFlip
         '/\bMrs\b\./' => 'Mr.',
         '/\bMiss\b/' => 'Mr.',
         '/\bSir\b/' => 'Lady',
+        '/\bSir\b/' => 'Madam',
+        '/\bSir\b/' => 'Ma\'am',
         '/\bLady\b/' => 'Sir',
+        '/\bMadam\b/' => 'Sir',
+        '/\bMa\'am\b/' => 'Sir',
     ];
 
     /**
@@ -145,14 +111,18 @@ class GenderFlip
      */
     public function flip()
     {
-        $valueFormat = $this->placeholder . '%s' . $this->placeholder;
+        $fromFormat = '/\b%s\b/';
+        $toFormat = $this->placeholder . '%s' . $this->placeholder;
 
         $flips = [];
-        foreach ($this->flips as $key => $value) {
-            $flips["/\b{$key}\b/"] = sprintf($valueFormat, $value);
+        foreach ($this->flips as $from => $to) {
+            $from = strtolower($from);
+            $to = strtolower($to);
+            $flips[sprintf($fromFormat, $from)] = sprintf($toFormat, $to);
+            $flips[sprintf($fromFormat, ucfirst($from))] = sprintf($toFormat, ucfirst($to));
         }
-        foreach ($this->patternFlips as $key => $value) {
-            $flips[$key] = sprintf($valueFormat, $value);
+        foreach ($this->patternFlips as $from => $to) {
+            $flips[$from] = sprintf($toFormat, $to);
         }
 
         $text = preg_replace(array_keys($flips), array_values($flips), $this->originalText);
