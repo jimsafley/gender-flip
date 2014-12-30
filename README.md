@@ -25,14 +25,15 @@ You can even add your own flips:
 require_once 'GenderFlip.php';
 $text = file_get_contents('/path/to/text.txt');
 $genderFlip = new GenderFlip($text);
-$genderFlip->addFlip('Lizzy', 'John');
-$genderFlip->addFlip('Jane', 'Paul');
-$genderFlip->addFlip('Mary', 'George');
-$genderFlip->addFlip('Lydia', 'Ringo');
-$genderFlip->addFlip('Kitty', 'Pete');
+// Flips match an exact word in both cases.
+$genderFlip->addFlip('handsome', 'pretty');
+// Pattern flips use regular expressions to match a word.
+$genderFlip->addPatternFlip('/\bLizzy\b/', 'John');
+$genderFlip->addPatternFlip('/\bJane\b/', 'Paul');
+$genderFlip->addPatternFlip('/\bLydia\b/', 'Ringo');
 echo $genderFlip->flip();
 ```
 
-> "I desire you will do no such thing. John is not a bit better than the others; and I am sure he is not half so handsome as Paul, nor half so good-humoured as Ringo. But you are always giving his the preference."
+> "I desire you will do no such thing. John is not a bit better than the others; and I am sure he is not half so pretty as Paul, nor half so good-humoured as Ringo. But you are always giving his the preference."
 
-Gender flipping is not an exact science. There are semantic inconsistencies (her/his, hers/his), as well as ambiguous cases (Lady/Sir, lady/gentleman). This tool does not attempt to flip gendered adjectives (pretty/handsome, womanly/manly) or gendered names (Jill/Jack, Marsha/John). Use the `addFlip()` method to customize what words are flipped.
+Gender flipping is not an exact science. There are semantic inconsistencies (her/his, hers/his), as well as ambiguous cases (Lady/Sir, lady/gentleman). This tool does not attempt to flip gendered adjectives (pretty/handsome, womanly/manly) or gendered names (Jill/Jack, Marsha/John). Use the `addFlip()` or `addPatternFlip()` method to customize what words are flipped.
