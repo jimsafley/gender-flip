@@ -111,18 +111,18 @@ class GenderFlip
      */
     public function flip()
     {
-        $fromFormat = '/\b%s\b/';
-        $toFormat = $this->placeholder . '%s' . $this->placeholder;
+        $findFormat = '/\b%s\b/';
+        $replaceFormat = $this->placeholder . '%s' . $this->placeholder;
 
         $flips = [];
-        foreach ($this->flips as $from => $to) {
-            $from = strtolower($from);
-            $to = strtolower($to);
-            $flips[sprintf($fromFormat, $from)] = sprintf($toFormat, $to);
-            $flips[sprintf($fromFormat, ucfirst($from))] = sprintf($toFormat, ucfirst($to));
+        foreach ($this->patternFlips as $find => $replace) {
+            $flips[$find] = sprintf($toFormat, $replace);
         }
-        foreach ($this->patternFlips as $from => $to) {
-            $flips[$from] = sprintf($toFormat, $to);
+        foreach ($this->flips as $find => $replace) {
+            $find = strtolower($find);
+            $replace = strtolower($replace);
+            $flips[sprintf($findFormat, $find)] = sprintf($replaceFormat, $replace);
+            $flips[sprintf($findFormat, ucfirst($find))] = sprintf($replaceFormat, ucfirst($replace));
         }
 
         $text = preg_replace(array_keys($flips), array_values($flips), $this->originalText);
@@ -134,22 +134,22 @@ class GenderFlip
     /**
      * Add a flip to the flip map.
      *
-     * @param string $from
-     * @param string $to
+     * @param string $find
+     * @param string $replace
      */
-    public function addFlip($from, $to)
+    public function addFlip($find, $replace)
     {
-        $this->flips[$from] = $to;
+        $this->flips[$find] = $replace;
     }
 
     /**
      * Add a flip to the pattern flip map.
      *
-     * @param string $from
-     * @param string $to
+     * @param string $find
+     * @param string $replace
      */
-    public function addPatternFlip($from, $to)
+    public function addPatternFlip($find, $replace)
     {
-        $this->patternFlips[$from] = $to;
+        $this->patternFlips[$find] = $replace;
     }
 }
