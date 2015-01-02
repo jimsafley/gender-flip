@@ -17,10 +17,10 @@ class GenderFlip
         'he' => 'she',
         'she' => 'he',
         'him' => 'her',
-        'her' => 'him', // conflict with her/his
-        'his' => 'her', // conflict with his/hers
         'her' => 'his', // conflict with her/him
         'his' => 'hers', // conflict with his/her
+        'her' => 'him', // conflict with her/his
+        'his' => 'her', // conflict with his/hers
         'hers' => 'his',
         'man' => 'woman',
         'woman' => 'man',
@@ -80,15 +80,6 @@ class GenderFlip
     ];
 
     /**
-     * Placeholder characters.
-     *
-     * Used to differentiate words that have been flipped from those that haven't.
-     *
-     * @var string
-     */
-    protected $placeholder = '____';
-
-    /**
      * The original, unmodified text passed into the constructor.
      *
      * @var string
@@ -112,21 +103,48 @@ class GenderFlip
     public function flip()
     {
         $findFormat = '/\b%s\b/';
-        $replaceFormat = $this->placeholder . '%s' . $this->placeholder;
+        $replaceFormat = '____%s____';
 
+        // First, regularize the simple flips for processing.
         $flips = [];
-        foreach ($this->patternFlips as $find => $replace) {
-            $flips[$find] = sprintf($toFormat, $replace);
-        }
         foreach ($this->flips as $find => $replace) {
             $find = strtolower($find);
             $replace = strtolower($replace);
-            $flips[sprintf($findFormat, $find)] = sprintf($replaceFormat, $replace);
-            $flips[sprintf($findFormat, ucfirst($find))] = sprintf($replaceFormat, ucfirst($replace));
+            $flips[$find] = $replace;
+            $flips[ucfirst($find)] = ucfirst($replace);
         }
 
-        $text = preg_replace(array_keys($flips), array_values($flips), $this->originalText);
-        $text = str_replace($this->placeholder, '', $text);
+        // Process the pattern flips and simple flips, giving them temporary
+        // placeholders and corresponding replacements.
+        $i = 0;
+        $tempFlips = [];
+        $replacements = [];
+        foreach ($this->patternFlips as $find => $replace) {
+            $tempFlips[$find] = sprintf($replaceFormat, $i);
+            $replacements[$i] = $replace;
+            $i++;
+        }
+        foreach ($flips as $find => $replace) {
+            $tempFlips[sprintf($findFormat, $find)] = sprintf($replaceFormat, $i);
+            $replacements[$i] = $replace;
+            $i++;
+        }
+
+        // Temporarily replace all gendered words with an indexed placeholder.
+        $text = preg_replace(
+            array_keys($tempFlips),
+            array_values($tempFlips),
+            $this->originalText
+        );
+
+        // Find all placeholders, replacing them with the corresponding text.
+        $text = preg_replace_callback(
+            '/\b_{4}(\d+)_{4}\b/',
+            function($matches) use ($replacements) {
+                return $replacements[$matches[1]];
+            },
+            $text
+        );
 
         return $text;
     }
