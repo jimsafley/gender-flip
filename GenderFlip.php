@@ -5,7 +5,7 @@
 class GenderFlip
 {
     /**
-     * Map for simple gender-flips.
+     * Map for simple gender flips.
      *
      * All words will be converted to lowercase and then duplicated with the
      * first character uppercased.
@@ -61,7 +61,7 @@ class GenderFlip
     ];
 
     /**
-     * Map for pattern-based gender-flips.
+     * Map for pattern-based gender flips.
      *
      * For special cases that require custom regex patterns.
      *
@@ -88,6 +88,8 @@ class GenderFlip
 
     /**
      * Construct this object, setting the original text.
+     *
+     * @param string $text
      */
     public function __construct($text)
     {
@@ -97,8 +99,7 @@ class GenderFlip
     /**
      * Flip the genders of the original text.
      *
-     * @param string $text
-     * @param string
+     * @return string
      */
     public function flip()
     {
@@ -150,9 +151,19 @@ class GenderFlip
     }
 
     /**
+     * Get the original text.
+     *
+     * @return string
+     */
+    public function getOriginalText()
+    {
+        return $this->originalText;
+    }
+
+    /**
      * Add a flip to the flip map.
      *
-     * @param string $find
+     * @param string $find A word in lowercase
      * @param string $replace
      */
     public function addFlip($find, $replace)
@@ -163,7 +174,7 @@ class GenderFlip
     /**
      * Add a flip to the pattern flip map.
      *
-     * @param string $find
+     * @param string $find A regular expression pattern
      * @param string $replace
      */
     public function addPatternFlip($find, $replace)
